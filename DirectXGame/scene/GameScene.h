@@ -44,6 +44,18 @@ private: // メンバ変数
 	Input* input_ = nullptr;
 	Audio* audio_ = nullptr;
 
+	uint32_t textureHandle_ = 0; // テクスチャハンドル
+	Sprite* sprite_ = nullptr; // スプライト
+
+	Model* model_ = nullptr; // 3Dモデル
+	WorldTransform worldTransform_; // ワールドトランスフォーム
+	ViewProjection viewProjection_; // ビュープロジェクション
+
+	uint32_t soundDataHandle_ = 0; // サウンドデータハンドル
+	uint32_t voiceHandle_ = 0; // 音声再生ハンドル*/
+
+	float inputFloat3[3] = {0, 0, 0}; // ImGuiで値を入力する変数
+
 	/// <summary>
 	/// ゲームシーン用
 	/// </summary>
