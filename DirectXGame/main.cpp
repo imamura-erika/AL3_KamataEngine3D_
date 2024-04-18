@@ -22,9 +22,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	win = WinApp::GetInstance();
 	win->CreateGameWindow(L"GC2B_03_イマムラ_エリカ_AL3");
 
-	// あああああ
-
-
 	// DirectX初期化処理
 	dxCommon = DirectXCommon::GetInstance();
 	dxCommon->Initialize(win);
