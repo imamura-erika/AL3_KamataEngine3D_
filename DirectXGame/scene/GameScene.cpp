@@ -4,9 +4,15 @@
 
 GameScene::GameScene() {}
 
-GameScene::~GameScene() {
+GameScene::~GameScene() { // デストラクタ
 	delete model_;
 	delete player_;
+	delete modelBlock_;
+	// 範囲for文で配列内の1個ずつ取り出しながら処理
+	for (WorldTransform* worldTransformBlock : worldTransformBlocks_) {
+		delete worldTransformBlock; // 実際にインスタンスを解放する処理
+	}
+	worldTransformBlocks_.clear(); // 配列から要素を一掃
 }
 
 void GameScene::Initialize() {
@@ -25,12 +31,39 @@ void GameScene::Initialize() {
 	// 自キャラの生成
 	player_ = new Player();
 	// 自キャラの初期化
-	player_->Intialize(model_,textureHandle_);
+	player_->Intialize(model_,textureHandle_, &viewProjection_);
+	
+	// ブロックの生成
+	modelBlock_ = Model::Create();
+	// 要素数
+	const uint32_t knumBlockHorizontal = 20;
+	// ブロック1個分の横幅
+	const float kBlockWidth = 2.0f;
+	// 要素数を変更する
+	worldTransformBlocks_.resize(knumBlockHorizontal);
+
+	// キューブの生成
+	for (uint32_t i = 0; i < knumBlockHorizontal; ++i) {
+		worldTransformBlocks_[i] = new WorldTransform();
+		worldTransformBlocks_[i]->Initialize();
+		worldTransformBlocks_[i]->translation_.x = kBlockWidth * i;
+		worldTransformBlocks_[i]->translation_.y = 0.0f;
+	}
 }
 
 void GameScene::Update() {
 	// 自キャラの更新
 	player_->Update();
+
+	// ブロックの更新
+	for (WorldTransform* worldTransformBlock : worldTransformBlocks_) {
+		// アフィン変換行列の作成
+
+		//worldTransformBlock->matWorld_ = アフィン変換行列;
+
+		// 定数バッファに転送する
+		worldTransformBlock->TransferMatrix();
+	}
 }
 
 void GameScene::Draw() {
