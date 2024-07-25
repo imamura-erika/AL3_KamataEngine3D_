@@ -4,11 +4,13 @@
 #include "DirectXCommon.h"
 #include "Input.h"
 #include "Model.h"
+#include "Player.h"
 #include "Sprite.h"
 #include "ViewProjection.h"
 #include "WorldTransform.h"
-#include "Player.h"
-#include "vector"
+#include <vector>
+
+#include "DebugCamera.h"
 
 /// <summary>
 /// ゲームシーン
@@ -20,12 +22,12 @@ public: // メンバ関数
 	/// コンストクラタ
 	/// </summary>
 	GameScene();
-	std::vector<WorldTransform*> worldTransformBlocks_;
 
 	/// <summary>
 	/// デストラクタ
 	/// </summary>
 	~GameScene();
+	std::vector<WorldTransform*> worldTransformBlocks_;
 
 	/// <summary>
 	/// 初期化
@@ -47,13 +49,13 @@ private: // メンバ変数
 	Input* input_ = nullptr;
 	Audio* audio_ = nullptr;
 
-	uint32_t textureHandle_ = 0; // テクスチャハンドル
-	Model* model_ = nullptr; // 3Dモデル
+	uint32_t textureHandle_ = 0;    // テクスチャハンドル
+	Model* model_ = nullptr;        // 3Dモデル
 	ViewProjection viewProjection_; // ビュープロジェクション
 
 	Player* player_ = nullptr; // 自キャラ
-	Model* modelBlock_ = nullptr; // ブロック
 
+	Model* blockModel_ = nullptr; // ブロック3Dモデル
 
 	/// <summary>
 	/// ゲームシーン用

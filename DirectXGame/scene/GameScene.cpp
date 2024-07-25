@@ -5,9 +5,9 @@
 GameScene::GameScene() {}
 
 GameScene::~GameScene() { // デストラクタ
-	delete model_;
-	delete player_;
-	delete modelBlock_;
+	delete model_; // 3Dモデル
+	delete player_; // プレイヤー
+	delete blockModel_; // ブロック3Dモデル
 	// 範囲for文で配列内の1個ずつ取り出しながら処理
 	for (WorldTransform* worldTransformBlock : worldTransformBlocks_) {
 		delete worldTransformBlock; // 実際にインスタンスを解放する処理
@@ -22,7 +22,7 @@ void GameScene::Initialize() {
 	audio_ = Audio::GetInstance();
 
 	// ファイル名を指定してテクスチャを読み込む
-	textureHandle_ = TextureManager::Load("sample.png");
+	textureHandle_ = TextureManager::Load("uvChecker.png");
 	// 3Dモデルの生成
 	model_ = Model::Create();
 	// ビュープロジェクションの初期化
@@ -33,8 +33,8 @@ void GameScene::Initialize() {
 	// 自キャラの初期化
 	player_->Intialize(model_,textureHandle_, &viewProjection_);
 	
-	// ブロックの生成
-	modelBlock_ = Model::Create();
+	// ブロック3Dモデルの生成
+	blockModel_ = Model::Create();
 	// 要素数
 	const uint32_t knumBlockHorizontal = 20;
 	// ブロック1個分の横幅
@@ -58,8 +58,10 @@ void GameScene::Update() {
 	// ブロックの更新
 	for (WorldTransform* worldTransformBlock : worldTransformBlocks_) {
 		// アフィン変換行列の作成
-
-		//worldTransformBlock->matWorld_ = アフィン変換行列;
+		worldTransformBlock->matWorld_ = MakeAffineMatrix(
+			worldTransformBlock->scale_, 
+            worldTransformBlock->rotation_, 
+            worldTransformBlock->translation_);
 
 		// 定数バッファに転送する
 		worldTransformBlock->TransferMatrix();
@@ -95,6 +97,11 @@ void GameScene::Draw() {
 
 	// 自キャラの描画
 	player_->Draw();
+
+	// ブロックの描画
+	for (WorldTransform* worldTransformBlock : worldTransformBlocks_) {
+		blockModel_->Draw(*worldTransformBlock, viewProjection_);
+	}
 
 	// 3Dオブジェクト描画後処理
 	Model::PostDraw();
