@@ -27,7 +27,7 @@ public: // メンバ関数
 	/// デストラクタ
 	/// </summary>
 	~GameScene();
-	std::vector<WorldTransform*> worldTransformBlocks_;
+	std::vector<std::vector<WorldTransform*>> worldTransformBlocks_;
 
 	/// <summary>
 	/// 初期化
