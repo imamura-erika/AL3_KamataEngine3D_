@@ -15,6 +15,7 @@ GameScene::~GameScene() { // デストラクタ
 		}
 	}
 	worldTransformBlocks_.clear(); // 配列から要素を一掃
+	delete debugCamera_; // デバッグカメラ
 }
 
 void GameScene::Initialize() {
@@ -61,6 +62,9 @@ void GameScene::Initialize() {
 			worldTransformBlocks_[i][j]->translation_.y = kBlockHeight * i;
 		}
 	}
+
+	// デバッグカメラの生成
+	debugCamera_ = new DebugCamera(1280, 720);
 }
 
 void GameScene::Update() {
@@ -70,6 +74,8 @@ void GameScene::Update() {
 	// ブロックの更新
 	for (std::vector<WorldTransform*>& worldTransformBlockLine : worldTransformBlocks_) {
 		for (WorldTransform* worldTransformBlock : worldTransformBlockLine) {
+			if (!worldTransformBlock)
+				continue;
 			// アフィン変換行列の作成
 			worldTransformBlock->matWorld_ = MakeAffineMatrix(worldTransformBlock->scale_, worldTransformBlock->rotation_, worldTransformBlock->translation_);
 
@@ -77,6 +83,27 @@ void GameScene::Update() {
 			worldTransformBlock->TransferMatrix();
 		}
 	}
+
+// デバッグカメラ
+#ifdef _DEBUG
+	if (input_->TriggerKey(DIK_BACKSPACE)) {
+		isDebugCameraActive_ = true; // デバッグカメラ有効フラグをトグル
+	}
+	// カメラの処理
+	if (isDebugCameraActive_) {
+		debugCamera_->Update(); // デバッグカメラの更新
+		
+		viewProjection_.matView = debugCamera_->GetViewProjection(); // デバッグカメラのビュー行列
+		viewProjection_.matProjection = ; // デバッグカメラのプロジェクション行列
+		
+		// ビュープロジェクション行列の転送
+		viewProjection_.TransferMatrix();
+	} else {
+		// ビュープロジェクション行列の更新と転送
+		viewProjection_.UpdateMatrix();
+	}
+#endif
+
 }
 
 void GameScene::Draw() {
@@ -112,6 +139,8 @@ void GameScene::Draw() {
 	// ブロックの描画
 	for (std::vector<WorldTransform*>& worldTransformBlockLine : worldTransformBlocks_) {
 		for (WorldTransform* worldTransformBlock : worldTransformBlockLine) {
+			if (!worldTransformBlock)
+				continue;
 			blockModel_->Draw(*worldTransformBlock, viewProjection_);
 		}
 	}

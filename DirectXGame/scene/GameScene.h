@@ -57,6 +57,10 @@ private: // メンバ変数
 
 	Model* blockModel_ = nullptr; // ブロック3Dモデル
 
+	bool isDebugCameraActive_ = false; // デバッグカメラ有効
+	DebugCamera* debugCamera_ = nullptr; // デバッグカメラ
+
+
 	/// <summary>
 	/// ゲームシーン用
 	/// </summary>
