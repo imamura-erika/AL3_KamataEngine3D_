@@ -4,7 +4,7 @@
 #include "DirectXCommon.h"
 #include "Input.h"
 #include "Model.h"
-#include "Player.h"
+//#include "Player.h"
 #include "Sprite.h"
 #include "ViewProjection.h"
 #include "WorldTransform.h"
@@ -53,7 +53,7 @@ private: // メンバ変数
 	Model* model_ = nullptr;        // 3Dモデル
 	ViewProjection viewProjection_; // ビュープロジェクション
 
-	Player* player_ = nullptr; // 自キャラ
+//	Player* player_ = nullptr; // 自キャラ
 
 	Model* blockModel_ = nullptr; // ブロック3Dモデル
 

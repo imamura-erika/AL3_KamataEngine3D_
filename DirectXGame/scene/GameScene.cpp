@@ -6,7 +6,7 @@ GameScene::GameScene() {}
 
 GameScene::~GameScene() { // デストラクタ
 	delete model_; // 3Dモデル
-	delete player_; // プレイヤー
+//	delete player_; // プレイヤー
 	delete blockModel_; // ブロック3Dモデル
 	// 範囲for文で配列内の1個ずつ取り出しながら処理
 	for (std::vector<WorldTransform*>& worldTransformBlockLine : worldTransformBlocks_) {
@@ -31,10 +31,10 @@ void GameScene::Initialize() {
 	// ビュープロジェクションの初期化
 	viewProjection_.Initialize();
 
-	// 自キャラの生成
-	player_ = new Player();
-	// 自キャラの初期化
-	player_->Intialize(model_, textureHandle_, &viewProjection_);
+//	// 自キャラの生成
+//	player_ = new Player();
+//	// 自キャラの初期化
+//	player_->Intialize(model_, textureHandle_, &viewProjection_);
 
 	// ブロック3Dモデルの生成
 	blockModel_ = Model::Create();
@@ -76,7 +76,7 @@ void GameScene::Initialize() {
 
 void GameScene::Update() {
 	// 自キャラの更新
-	player_->Update();
+//	player_->Update();
 
 	// ブロックの更新
 	for (std::vector<WorldTransform*>& worldTransformBlockLine : worldTransformBlocks_) {
@@ -142,7 +142,7 @@ void GameScene::Draw() {
 	/// </summary>
 
 	// 自キャラの描画
-	player_->Draw();
+//	player_->Draw();
 
 	// ブロックの描画
 	for (std::vector<WorldTransform*>& worldTransformBlockLine : worldTransformBlocks_) {
