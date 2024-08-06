@@ -56,6 +56,13 @@ void GameScene::Initialize() {
 	// ブロックの生成
 	for (uint32_t i = 0; i < kNumBlockVirtical; ++i) {
 		for (uint32_t j = 0; j < kNumBlockHorizontal; ++j) {
+			// 千鳥格子パターンで穴を開ける処理
+			// i(行)が偶数かつj(列)が奇数の場合　または
+			// i(行)が奇数かつj(列)が偶数の場合
+			if ((i % 2 == 0 && j % 2 == 1) || (i % 2 == 1 && j % 2 == 0)) {
+				worldTransformBlocks_[i][j] = nullptr; // 穴を開ける
+				continue;
+			}
 			worldTransformBlocks_[i][j] = new WorldTransform();
 			worldTransformBlocks_[i][j]->Initialize();
 			worldTransformBlocks_[i][j]->translation_.x = kBlockWidth * j;
@@ -64,7 +71,7 @@ void GameScene::Initialize() {
 	}
 
 	// デバッグカメラの生成
-	debugCamera_ = new DebugCamera(1280, 720);
+	debugCamera_ = new DebugCamera(WinApp::kWindowWidth, WinApp::kWindowHeight);
 }
 
 void GameScene::Update() {
@@ -93,8 +100,9 @@ void GameScene::Update() {
 	if (isDebugCameraActive_) {
 		debugCamera_->Update(); // デバッグカメラの更新
 		
-		viewProjection_.matView = debugCamera_->GetViewProjection(); // デバッグカメラのビュー行列
-		viewProjection_.matProjection = ; // デバッグカメラのプロジェクション行列
+		const ViewProjection& debugViewProjection = debugCamera_->GetViewProjection();
+		viewProjection_.matView = debugViewProjection.matView;     // デバッグカメラのビュー行列
+		viewProjection_.matProjection = debugViewProjection.matProjection; // デバッグカメラのプロジェクション行列
 		
 		// ビュープロジェクション行列の転送
 		viewProjection_.TransferMatrix();
