@@ -9,8 +9,8 @@
 #include "ViewProjection.h"
 #include "WorldTransform.h"
 #include <vector>
-
 #include "DebugCamera.h"
+#include "Skydome.h"
 
 /// <summary>
 /// ゲームシーン
@@ -52,6 +52,9 @@ private: // メンバ変数
 	uint32_t textureHandle_ = 0;    // テクスチャハンドル
 	Model* model_ = nullptr;        // 3Dモデル
 	ViewProjection viewProjection_; // ビュープロジェクション
+
+	Skydome* skydome_ = nullptr; // 天球
+	Model* modelSkydome_ = nullptr; // 天球3Dモデル
 
 //	Player* player_ = nullptr; // 自キャラ
 

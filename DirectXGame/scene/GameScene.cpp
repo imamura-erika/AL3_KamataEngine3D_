@@ -6,7 +6,9 @@ GameScene::GameScene() {}
 
 GameScene::~GameScene() { // デストラクタ
 	delete model_; // 3Dモデル
-//	delete player_; // プレイヤー
+	delete skydome_; // 天球
+	delete modelSkydome_; // 天球3Dモデル
+	//	delete player_; // プレイヤー
 	delete blockModel_; // ブロック3Dモデル
 	// 範囲for文で配列内の1個ずつ取り出しながら処理
 	for (std::vector<WorldTransform*>& worldTransformBlockLine : worldTransformBlocks_) {
@@ -16,6 +18,7 @@ GameScene::~GameScene() { // デストラクタ
 	}
 	worldTransformBlocks_.clear(); // 配列から要素を一掃
 	delete debugCamera_; // デバッグカメラ
+
 }
 
 void GameScene::Initialize() {
@@ -30,6 +33,13 @@ void GameScene::Initialize() {
 	model_ = Model::Create();
 	// ビュープロジェクションの初期化
 	viewProjection_.Initialize();
+
+	// 天球の生成
+	skydome_ = new Skydome();
+	// 天球の初期化
+	skydome_->Initialize(modelSkydome_, &viewProjection_);
+	// 天球3Dモデルの生成
+	modelSkydome_ = Model::CreateFromOBJ("Skydome", true);
 
 //	// 自キャラの生成
 //	player_ = new Player();
@@ -75,6 +85,9 @@ void GameScene::Initialize() {
 }
 
 void GameScene::Update() {
+	// 天球の更新
+	skydome_->Update();
+	
 	// 自キャラの更新
 //	player_->Update();
 
@@ -140,6 +153,9 @@ void GameScene::Draw() {
 	/// <summary>
 	/// ここに3Dオブジェクトの描画処理を追加できる
 	/// </summary>
+
+	// 天球の描画
+	skydome_->Draw();
 
 	// 自キャラの描画
 //	player_->Draw();
