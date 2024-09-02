@@ -38,6 +38,7 @@ void GameScene::Initialize() {
 	// 3Dモデルの生成
 	model_ = Model::Create();
 	// ビュープロジェクションの初期化
+	viewProjection_.farZ = 5000;
 	viewProjection_.Initialize();
 
 	// 天球3Dモデルの生成
@@ -47,10 +48,14 @@ void GameScene::Initialize() {
 	// 天球の初期化
 	skydome_->Initialize(modelSkydome_, &viewProjection_);
 
-//	// 自キャラの生成
-//	player_ = new Player();
-//	// 自キャラの初期化
-//	player_->Intialize(model_, textureHandle_, &viewProjection_);
+	// 自キャラの生成
+	player_ = new Player();
+	
+	model_ = Model::CreateFromOBJ("Player", true);
+	// 座標をマップチップ番号で指定
+	Vector3 playerPosition = mapChipField_->GetMapChipPositionByIndex(1, 18);
+	// 自キャラの初期化
+	player_->Initialise(model_, &viewProjection_, playerPosition);
 
 	// ブロック3Dモデルの生成
 	blockModel_ = Model::Create();
@@ -64,7 +69,7 @@ void GameScene::Update() {
 	skydome_->Update();
 	
 	// 自キャラの更新
-//	player_->Update();
+	player_->Update();
 
 	// ブロックの更新
 	for (std::vector<WorldTransform*>& worldTransformBlockLine : worldTransformBlocks_) {
@@ -153,7 +158,7 @@ void GameScene::Draw() {
 	skydome_->Draw();
 
 	// 自キャラの描画
-//	player_->Draw();
+	player_->Draw();
 
 	// ブロックの描画
 	for (std::vector<WorldTransform*>& worldTransformBlockLine : worldTransformBlocks_) {
