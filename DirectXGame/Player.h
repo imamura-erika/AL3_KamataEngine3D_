@@ -32,6 +32,12 @@ public: // メンバ関数
 	/// </summary>
 	void Draw();
 
+
+	const Vector3& GetVelocity() const { return velocity_; }
+
+	const WorldTransform& GetWorldTransform() const { return worldTransform_; }
+
+
 private: // メンバ変数
 	// ワールド変換データ
 	WorldTransform worldTransform_;

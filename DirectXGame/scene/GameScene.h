@@ -12,6 +12,7 @@
 #include "DebugCamera.h"
 #include "Skydome.h"
 #include "MapChipField.h"
+#include "CameraController.h"
 
 /// <summary>
 /// ゲームシーン
@@ -51,7 +52,7 @@ private: // メンバ変数
 	Audio* audio_ = nullptr;
 
 	uint32_t textureHandle_ = 0;    // テクスチャハンドル
-	Model* model_ = nullptr;        // 3Dモデル
+
 
 	WorldTransform worldTransform_; // ワールドトランスフォーム
 	ViewProjection viewProjection_; // ビュープロジェクション
@@ -60,6 +61,7 @@ private: // メンバ変数
 	Skydome* skydome_ = nullptr; // 天球
 
 	Player* player_ = nullptr; // 自キャラ
+	Model* modelPlayer_ = nullptr; // 自キャラ3Dモデル
 
 	Model* blockModel_ = nullptr; // ブロック3Dモデル
 
@@ -69,7 +71,9 @@ private: // メンバ変数
 
 
 	bool isDebugCameraActive_ = false; // デバッグカメラ有効
-	DebugCamera* debugCamera_ = nullptr; // デバッグカメラ
+	DebugCamera* debugCamera_ = nullptr; // 
+
+	CameraController* cameraController_ = nullptr; // カメラコントローラ
 
 
 	/// <summary>

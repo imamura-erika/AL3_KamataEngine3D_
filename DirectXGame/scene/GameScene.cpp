@@ -5,10 +5,10 @@
 GameScene::GameScene() {}
 
 GameScene::~GameScene() { // デストラクタ
-	delete model_; // 3Dモデル
+	delete modelPlayer_; // 3Dモデル
 	delete modelSkydome_; // 天球3Dモデル
 	delete skydome_; // 天球
-	//	delete player_; // プレイヤー
+		delete player_; // プレイヤー
 	delete blockModel_; // ブロック3Dモデル
 	// 範囲for文で配列内の1個ずつ取り出しながら処理
 	for (std::vector<WorldTransform*>& worldTransformBlockLine : worldTransformBlocks_) {
@@ -20,6 +20,7 @@ GameScene::~GameScene() { // デストラクタ
 
 	delete debugCamera_; // デバッグカメラ
 	delete mapChipField_; // マップチップフィールド
+	delete cameraController_; // カメラコントローラ
 }
 
 void GameScene::Initialize() {
@@ -33,10 +34,10 @@ void GameScene::Initialize() {
 	mapChipField_->LoadMapChipCsv("Resources/blocks.csv");
 	GenerateBlocks();
 
-	// ファイル名を指定してテクスチャを読み込む
+	// テクスチャ読み込み
 	textureHandle_ = TextureManager::Load("uvChecker.png");
 	// 3Dモデルの生成
-	model_ = Model::Create();
+	modelPlayer_ = Model::Create();
 	// ビュープロジェクションの初期化
 	viewProjection_.farZ = 5000;
 	viewProjection_.Initialize();
@@ -51,60 +52,64 @@ void GameScene::Initialize() {
 	// 自キャラの生成
 	player_ = new Player();
 	
-	model_ = Model::CreateFromOBJ("Player", true);
+	modelPlayer_ = Model::CreateFromOBJ("Player", true);
 	// 座標をマップチップ番号で指定
 	Vector3 playerPosition = mapChipField_->GetMapChipPositionByIndex(1, 18);
 	// 自キャラの初期化
-	player_->Initialise(model_, &viewProjection_, playerPosition);
+	player_->Initialise(modelPlayer_, &viewProjection_, playerPosition);
 
 	// ブロック3Dモデルの生成
 	blockModel_ = Model::Create();
 	
 	// デバッグカメラの生成
 	debugCamera_ = new DebugCamera(WinApp::kWindowWidth, WinApp::kWindowHeight);
+
+	// カメラコントローラ
+	cameraController_ = new CameraController(); // 生成
+	cameraController_->Initialize();            // 初期化
+	CameraController::Rect cameraArea_ = {12.0f, 100 - 12.0f, 6.0f, 6.0f};
+	cameraController_->SetMovableArea(cameraArea_);
+	cameraController_->SetTarget(player_); // 追従対象をセット
+	cameraController_->Reset(); // リセット(瞬間合わせ)
+
 }
 
 void GameScene::Update() {
+	// デバッグカメラ
+	if (input_->TriggerKey(DIK_BACKSPACE)) { // バックスペースが押されたとき
+		isDebugCameraActive_ = !isDebugCameraActive_; // デバッグカメラ有効フラグをトグル
+	}
+
 	// 天球の更新
 	skydome_->Update();
-	
-	// 自キャラの更新
-	player_->Update();
 
-	// ブロックの更新
-	for (std::vector<WorldTransform*>& worldTransformBlockLine : worldTransformBlocks_) {
-		for (WorldTransform* worldTransformBlock : worldTransformBlockLine) {
+	if (isDebugCameraActive_ == true) { // デバッグカメラがtrueの場合
+		debugCamera_->Update(); // デバッグカメラの更新
+		viewProjection_.matView = debugCamera_->GetViewProjection().matView; // デバッグカメラのビュー行列
+		viewProjection_.matProjection = debugCamera_->GetViewProjection().matProjection; // デバッグカメラのプロジェクション行列
+		viewProjection_.TransferMatrix(); // ビュープロジェクション行列の転送
+	} else {
+		viewProjection_.matView = cameraController_->GetViewProjection().matView; // デバッグカメラのビュー行列
+		viewProjection_.matProjection = cameraController_->GetViewProjection().matProjection; // デバッグカメラのプロジェクション行列
+		viewProjection_.TransferMatrix(); // ビュープロジェクション行列の転送
+	}
+
+	for (std::vector<WorldTransform*>& worldTransforBlockLine : worldTransformBlocks_) {
+		for (WorldTransform* worldTransformBlock : worldTransforBlockLine) {
 			if (!worldTransformBlock)
 				continue;
-			// アフィン変換行列の作成
-			worldTransformBlock->matWorld_ = MakeAffineMatrix(worldTransformBlock->scale_, worldTransformBlock->rotation_, worldTransformBlock->translation_);
-
-			// 定数バッファに転送する
-			worldTransformBlock->TransferMatrix();
+			worldTransformBlock->UpdateMatrix();
 		}
 	}
 
-// デバッグカメラ
-#ifdef _DEBUG
-	if (input_->TriggerKey(DIK_BACKSPACE)) {
-		isDebugCameraActive_ = !isDebugCameraActive_; // デバッグカメラ有効フラグをトグル
-	}
-	// カメラの処理
-	if (isDebugCameraActive_) {
-		debugCamera_->Update(); // デバッグカメラの更新
-		
-		const ViewProjection& debugViewProjection = debugCamera_->GetViewProjection();
-		viewProjection_.matView = debugViewProjection.matView;     // デバッグカメラのビュー行列
-		viewProjection_.matProjection = debugViewProjection.matProjection; // デバッグカメラのプロジェクション行列
-		
-		// ビュープロジェクション行列の転送
-		viewProjection_.TransferMatrix();
-	} else {
-		// ビュープロジェクション行列の更新と転送
-		viewProjection_.UpdateMatrix();
-	}
-#endif
+	// デバッグカメラの更新
+	debugCamera_->Update();
 
+	// 自キャラの更新
+	player_->Update();
+
+	// カメラコントローラの更新
+	cameraController_->Update();
 }
 
 void GameScene::GenerateBlocks() {
