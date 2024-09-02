@@ -18,7 +18,6 @@ GameScene::~GameScene() { // デストラクタ
 	}
 	worldTransformBlocks_.clear(); // 配列から要素を一掃
 	delete debugCamera_; // デバッグカメラ
-
 }
 
 void GameScene::Initialize() {
