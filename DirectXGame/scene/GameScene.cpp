@@ -15,9 +15,11 @@ GameScene::~GameScene() { // デストラクタ
 		for (WorldTransform* worldTransformBlock : worldTransformBlockLine) {
 			delete worldTransformBlock; // 実際にインスタンスを解放する処理
 		}
+		worldTransformBlocks_.clear(); // 配列から要素を一掃
 	}
-	worldTransformBlocks_.clear(); // 配列から要素を一掃
+
 	delete debugCamera_; // デバッグカメラ
+	delete mapChipField_; // マップチップフィールド
 }
 
 void GameScene::Initialize() {
@@ -25,6 +27,11 @@ void GameScene::Initialize() {
 	dxCommon_ = DirectXCommon::GetInstance();
 	input_ = Input::GetInstance();
 	audio_ = Audio::GetInstance();
+	
+	// マップチップ
+	mapChipField_ = new MapChipField;
+	mapChipField_->LoadMapChipCsv("Resources/blocks.csv");
+	GenerateBlocks();
 
 	// ファイル名を指定してテクスチャを読み込む
 	textureHandle_ = TextureManager::Load("uvChecker.png");
@@ -47,38 +54,7 @@ void GameScene::Initialize() {
 
 	// ブロック3Dモデルの生成
 	blockModel_ = Model::Create();
-	// 要素数
-	const uint32_t kNumBlockVirtical = 10;
-	const uint32_t kNumBlockHorizontal = 20;
-	// ブロック1個分の横幅
-	const float kBlockWidth = 2.0f;
-	const float kBlockHeight = 2.0f;
-
-	// 要素数を変更する
-	// 列数を設定（縦方向のブロック数）
-	worldTransformBlocks_.resize(kNumBlockVirtical);
-	for (uint32_t i = 0; i < kNumBlockVirtical; ++i) {
-		// 1列の要素数を設定（横方向のブロック数）
-		worldTransformBlocks_[i].resize(kNumBlockHorizontal);
-	}
-
-	// ブロックの生成
-	for (uint32_t i = 0; i < kNumBlockVirtical; ++i) {
-		for (uint32_t j = 0; j < kNumBlockHorizontal; ++j) {
-			// 千鳥格子パターンで穴を開ける処理
-			// i(行)が偶数かつj(列)が奇数の場合　または
-			// i(行)が奇数かつj(列)が偶数の場合
-			if ((i % 2 == 0 && j % 2 == 1) || (i % 2 == 1 && j % 2 == 0)) {
-				worldTransformBlocks_[i][j] = nullptr; // 穴を開ける
-				continue;
-			}
-			worldTransformBlocks_[i][j] = new WorldTransform();
-			worldTransformBlocks_[i][j]->Initialize();
-			worldTransformBlocks_[i][j]->translation_.x = kBlockWidth * j;
-			worldTransformBlocks_[i][j]->translation_.y = kBlockHeight * i;
-		}
-	}
-
+	
 	// デバッグカメラの生成
 	debugCamera_ = new DebugCamera(WinApp::kWindowWidth, WinApp::kWindowHeight);
 }
@@ -125,6 +101,26 @@ void GameScene::Update() {
 #endif
 
 }
+
+void GameScene::GenerateBlocks() {
+	uint32_t numBlockVertical = mapChipField_->GetNumBlockVertical();
+	uint32_t numBlockHorizontal = mapChipField_->GetNumBlockHorizontal();
+	worldTransformBlocks_.resize(numBlockVertical);
+	for (uint32_t i = 0; i < numBlockVertical; i++) {
+		worldTransformBlocks_[i].resize(numBlockHorizontal);
+	}
+	// ブロックの生成
+	for (uint32_t i = 0; i < numBlockVertical; i++) {
+		for (uint32_t j = 0; j < numBlockHorizontal; j++) {
+			if (mapChipField_->GetMapChipTypeByIndex(j, i) == MapChipType::kBlock) {
+				WorldTransform* worldTransform = new WorldTransform();
+				worldTransform->Initialize();
+				worldTransformBlocks_[i][j] = worldTransform;
+				worldTransformBlocks_[i][j]->translation_ = mapChipField_->GetMapChipPositionByIndex(j, i);
+			}
+		}
+	}
+};
 
 void GameScene::Draw() {
 

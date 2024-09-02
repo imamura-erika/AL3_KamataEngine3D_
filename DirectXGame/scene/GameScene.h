@@ -11,6 +11,7 @@
 #include <vector>
 #include "DebugCamera.h"
 #include "Skydome.h"
+#include "MapChipField.h"
 
 /// <summary>
 /// ゲームシーン
@@ -61,6 +62,11 @@ private: // メンバ変数
 //	Player* player_ = nullptr; // 自キャラ
 
 	Model* blockModel_ = nullptr; // ブロック3Dモデル
+
+
+	MapChipField* mapChipField_; // マップチップフィールド
+	void GenerateBlocks();
+
 
 	bool isDebugCameraActive_ = false; // デバッグカメラ有効
 	DebugCamera* debugCamera_ = nullptr; // デバッグカメラ
