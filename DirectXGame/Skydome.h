@@ -1,6 +1,8 @@
 #pragma once
 #include "Model.h"
 #include "WorldTransform.h"
+#include "ViewProjection.h"
+#include "cassert"
 
 /// <summary>
 /// 天球

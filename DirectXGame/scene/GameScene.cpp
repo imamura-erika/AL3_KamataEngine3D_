@@ -6,8 +6,8 @@ GameScene::GameScene() {}
 
 GameScene::~GameScene() { // デストラクタ
 	delete model_; // 3Dモデル
-	delete skydome_; // 天球
 	delete modelSkydome_; // 天球3Dモデル
+	delete skydome_; // 天球
 	//	delete player_; // プレイヤー
 	delete blockModel_; // ブロック3Dモデル
 	// 範囲for文で配列内の1個ずつ取り出しながら処理
@@ -34,12 +34,12 @@ void GameScene::Initialize() {
 	// ビュープロジェクションの初期化
 	viewProjection_.Initialize();
 
-	// 天球の生成
-	skydome_ = new Skydome();
-	// 天球の初期化
-	skydome_->Initialize(modelSkydome_, &viewProjection_);
 	// 天球3Dモデルの生成
 	modelSkydome_ = Model::CreateFromOBJ("Skydome", true);
+	// 天球の生成
+	skydome_ = new Skydome;
+	// 天球の初期化
+	skydome_->Initialize(modelSkydome_, &viewProjection_);
 
 //	// 自キャラの生成
 //	player_ = new Player();
