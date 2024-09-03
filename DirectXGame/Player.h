@@ -102,9 +102,9 @@ private: // メンバ変数
 	bool onGround_ = true; // 接地状態フラグ
 	bool landing = false;
 
-	static inline const float kGravityAcceleration = 0.98f; // 重力加速度(下方向)
+	static inline const float kGravityAcceleration = 0.1f; // 重力加速度(下方向)
 	static inline const float kLimitFallSpeed = 0.8f; // 最大落下速度(下方向)
-	static inline const float kJumpAcceleration = 20.0f; // ジャンプ初速(上方向)
+	static inline const float kJumpAcceleration = 1.0f; // ジャンプ初速(上方向)
 
 	// マップチップによるフィールド
 	MapChipField* mapChipField_ = nullptr;
@@ -114,13 +114,13 @@ private: // メンバ変数
 	// マップ衝突判定
 	void CheckMapCollision(CollisionMapInfo& info);
 	void CheckMapCollisionTop(CollisionMapInfo& info); // 上
-	//void CheckMapCollisionBottom(CollisionMapInfo& info); // 下
+	void CheckMapCollisionBottom(CollisionMapInfo& info); // 下
 	void CheckMapCollisionRight(CollisionMapInfo& info); // 右
 	void CheckMapCollisionLeft(CollisionMapInfo& info); // 左
 
 	void collisionResult(CollisionMapInfo& info); // 判定結果を反映
-	void isCeilingCollision(CollisionMapInfo& info);
-	//void isLandingCollision(CollisionMapInfo& info);
+	void isCeilingCollision(CollisionMapInfo& info); // 天井
+	void isLandingCollision(CollisionMapInfo& info); // 地面
 	void isWallCollision(CollisionMapInfo& info); // 壁に接触
 
 	static inline const float kBlank = 0.2f; // 見た目と判定の差
