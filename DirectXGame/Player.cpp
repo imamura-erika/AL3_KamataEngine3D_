@@ -93,8 +93,6 @@ void Player::InputMove() {
 			}
 		}
 	}
-	// 移動
-	// worldTransform_.translation_ += velocity_;
 	// 接地判定
 	if (onGround_) {
 		// ジャンプ開始
@@ -172,10 +170,10 @@ void Player::Draw() {
 
 Vector3 Player::CornerPostion(const Vector3& center, Corner corner) {
 	Vector3 offsetTable[kNumCorners] = {
-	    {+kWidth / 2.0f, -kHeight / 2.0f, 0},
-        {-kWidth / 2.0f, -kHeight / 2.0f, 0},
-        {+kWidth / 2.0f, +kHeight / 2.0f, 0},
-        {-kWidth / 2.0f, +kHeight / 2.0f, 0}
+	    {+kWidth / 2.0f, -kHeight / 2.0f, 0}, // kRightBottom
+        {-kWidth / 2.0f, -kHeight / 2.0f, 0}, // kLeftBottom
+        {+kWidth / 2.0f, +kHeight / 2.0f, 0}, // kRightTop
+        {-kWidth / 2.0f, +kHeight / 2.0f, 0} // kLeftTop
     };
 	return Add(center, offsetTable[static_cast<uint32_t>(corner)]);
 };
@@ -236,3 +234,18 @@ void Player::CheckMapCollisionBottom(CollisionMapInfo &info){}
 void Player::CheckMapCollisionLeft(CollisionMapInfo &info){}
 void Player::CheckMapCollisionRight(CollisionMapInfo &info){}
 */
+
+// 判定結果を反映して移動させる
+void Player::collisionResult(CollisionMapInfo& info) { 
+	worldTransform_.translation_ = Add(worldTransform_.translation_, info.move); 
+}
+
+// 天井に接触している場合の処理
+void Player::isCeilingCollision(CollisionMapInfo& info) {
+	if (info.ceiling) {
+		velocity_.y = 0.0f;
+	}
+	if (info.ceiling) {
+		velocity_.y = 0.0f;
+	}
+}
