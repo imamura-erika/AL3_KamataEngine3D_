@@ -8,6 +8,8 @@ std::map<std::string, MapChipType> mapChipTable = {
     {"1", MapChipType::kBlock},
 };
 };
+uint32_t MapChipField::GetNumBlockVertical() { return kNumBlockVertical; }
+uint32_t MapChipField::GetNumBlockHorizontal() { return kNumBlockHorizontal; }
 
 // リセット
 void MapChipField::ResetMapChipData() {
@@ -70,5 +72,23 @@ Vector3 MapChipField::GetMapChipPositionByIndex(uint32_t xIndex, uint32_t yIndex
 	return Vector3(kBlockWidth * xIndex, kBlockHeight * (kNumBlockVertical - 1 - yIndex), 0);
 };
 
-uint32_t MapChipField::GetNumBlockVertical() { return kNumBlockVertical; }
-uint32_t MapChipField::GetNumBlockHorizontal() { return kNumBlockHorizontal; }
+// 座標からマップチップ番号を計算
+MapChipField::IndexSet MapChipField::GetMapChipIndexSetByPosition(const Vector3& position) {
+	IndexSet indexSet = {};
+	indexSet.xIndex = static_cast<uint32_t>((position.x + kBlockWidth / 2) / kBlockWidth);
+	indexSet.yIndex = kNumBlockVertical - 1 - static_cast<uint32_t>(position.y + kBlockHeight / 2.0f / kBlockHeight);
+	return indexSet;
+}
+
+// ブロックの範囲取得関数
+MapChipField::Rect MapChipField::GetRectByIndex(uint32_t xIndex, uint32_t yIndex) {
+	// 指定ブロックの中心座標を取得する
+	Vector3 center = GetMapChipPositionByIndex(xIndex, yIndex);
+	MapChipField::Rect rect;
+	rect.left = center.x - kBlockWidth / 2.0f;
+	rect.right = center.x + kBlockWidth / 2.0f;
+	rect.bottom = center.y - kBlockWidth / 2.0f;
+	rect.top = center.y + kBlockWidth / 2.0f;
+
+	return rect;
+}

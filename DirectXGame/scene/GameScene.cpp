@@ -51,12 +51,13 @@ void GameScene::Initialize() {
 
 	// 自キャラの生成
 	player_ = new Player();
-	
 	modelPlayer_ = Model::CreateFromOBJ("Player", true);
 	// 座標をマップチップ番号で指定
 	Vector3 playerPosition = mapChipField_->GetMapChipPositionByIndex(1, 18);
 	// 自キャラの初期化
 	player_->Initialise(modelPlayer_, &viewProjection_, playerPosition);
+	// マップチップデータのセット
+	player_->SetMapChipField(mapChipField_);
 
 	// ブロック3Dモデルの生成
 	blockModel_ = Model::Create();
