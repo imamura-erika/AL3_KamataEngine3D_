@@ -14,13 +14,11 @@ Player::~Player() {}
 
 void Player::Initialise(Model* model, ViewProjection* viewProjection, const Vector3& position) {
 	assert(model);                    // 引数として受け取ったポインタが無効なNULLポインタでないか確認
-	model_ = model;                   // モデル
-
 	worldTransform_.Initialize();     // ワールドトランスフォームの初期化
 	worldTransform_.translation_ = position;
-
 	worldTransform_.rotation_.y = std::numbers::pi_v<float> / 2.0f; // 初期回転角(右向き)
 	viewProjection_ = viewProjection; // ビュープロジェクション
+	model_ = Model::CreateFromOBJ("Player", true);                  // 引数の内容をメンバ変数に記録
 }
 
 // 移動入力

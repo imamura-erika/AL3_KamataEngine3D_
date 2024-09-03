@@ -32,6 +32,7 @@ void GameScene::Initialize() {
 	// マップチップ
 	mapChipField_ = new MapChipField;
 	mapChipField_->LoadMapChipCsv("Resources/blocks.csv");
+
 	GenerateBlocks();
 
 	// テクスチャ読み込み
@@ -56,6 +57,7 @@ void GameScene::Initialize() {
 	Vector3 playerPosition = mapChipField_->GetMapChipPositionByIndex(1, 18);
 	// 自キャラの初期化
 	player_->Initialise(modelPlayer_, &viewProjection_, playerPosition);
+
 	// マップチップデータのセット
 	player_->SetMapChipField(mapChipField_);
 
@@ -68,10 +70,10 @@ void GameScene::Initialize() {
 	// カメラコントローラ
 	cameraController_ = new CameraController(); // 生成
 	cameraController_->Initialize();            // 初期化
-	CameraController::Rect cameraArea_ = {12.0f, 100 - 12.0f, 6.0f, 6.0f};
-	cameraController_->SetMovableArea(cameraArea_);
 	cameraController_->SetTarget(player_); // 追従対象をセット
 	cameraController_->Reset(); // リセット(瞬間合わせ)
+	CameraController::Rect cameraArea_ = {12.0f, 100 - 12.0f, 6.0f, 6.0f};
+	cameraController_->SetMovableArea(cameraArea_);
 
 }
 
