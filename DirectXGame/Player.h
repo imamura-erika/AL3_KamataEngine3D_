@@ -9,8 +9,8 @@ class MapChipField;
 	// マップとの当たり判定情報
 struct CollisionMapInfo {
 	bool ceiling = false; // 天井衝突フラグ
-	bool landing = false;
-	bool hitWall = false;
+	bool landing = false; // 着地フラグ
+	bool hitWall = false; // 壁衝突フラグ
 	Vector3 move;
 };
 
@@ -87,9 +87,9 @@ private: // メンバ変数
 	// 移動
 	Vector3 velocity_ = {};
 
-	static inline const float kAcceleration = 0.1f; // 慣性移動
+	static inline const float kAcceleration = 0.04f; // 慣性移動
 	static inline const float kAttenuation = 0.1f; // 速度減衰率
-	static inline const float kLimitRunSpeed = 0.8f; // 最大速度制限
+	static inline const float kLimitRunSpeed = 0.5f; // 最大速度制限
 
 	LRDirection lrDirection_ = LRDirection::kRight;
 
@@ -115,15 +115,17 @@ private: // メンバ変数
 	void CheckMapCollision(CollisionMapInfo& info);
 	void CheckMapCollisionTop(CollisionMapInfo& info); // 上
 	//void CheckMapCollisionBottom(CollisionMapInfo& info); // 下
-	//void CheckMapCollisionRight(CollisionMapInfo& info); // 右
-	//void CheckMapCollisionLeft(CollisionMapInfo& info); // 左
+	void CheckMapCollisionRight(CollisionMapInfo& info); // 右
+	void CheckMapCollisionLeft(CollisionMapInfo& info); // 左
 
 	void collisionResult(CollisionMapInfo& info); // 判定結果を反映
 	void isCeilingCollision(CollisionMapInfo& info);
 	//void isLandingCollision(CollisionMapInfo& info);
-	//void isWallCollision(CollisionMapInfo& info);
+	void isWallCollision(CollisionMapInfo& info); // 壁に接触
 
-	static inline const float kBlank = 0.2f;
-	static inline const float kAttenuationWall = 0.2f; // 着地時の速度減衰率
+	static inline const float kBlank = 0.2f; // 見た目と判定の差
+
+	static inline const float kAttenuationWall = 0.2f; // 着地時の速度減衰率(壁)
+
 	static inline const float kAttenuationLanding = 0.0f; // 着地時の速度減衰率
 };
