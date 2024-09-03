@@ -12,8 +12,8 @@ Player::Player() {}
 
 Player::~Player() {}
 
-void Player::Initialise(Model* model, ViewProjection* viewProjection, const Vector3& position) {
-	assert(model);                    // 引数として受け取ったポインタが無効なNULLポインタでないか確認
+void Player::Initialise(ViewProjection* viewProjection, const Vector3& position) {
+	//assert(model);                    // 引数として受け取ったポインタが無効なNULLポインタでないか確認
 	worldTransform_.Initialize();     // ワールドトランスフォームの初期化
 	worldTransform_.translation_ = position;
 	worldTransform_.rotation_.y = std::numbers::pi_v<float> / 2.0f; // 初期回転角(右向き)

@@ -17,7 +17,6 @@ public: // メンバ関数
 		kRight,
 		kLeft,
 	};
-	LRDirection lrDirection_ = LRDirection::kRight;
 	// 角
 	enum Corner {
 		kRightBottom, // 右下
@@ -41,7 +40,7 @@ public: // メンバ関数
 	/// <summary>
 	/// 初期化処理
 	/// </summary>
-	void Initialise(Model* model, ViewProjection* viewProjection, const Vector3& position);
+	void Initialise( ViewProjection* viewProjection, const Vector3& position);
 
 	/// <summary>
 	/// 更新処理
@@ -88,6 +87,7 @@ private: // メンバ変数
 	static inline const float kAttenuation = 0.1f; // 速度減衰率
 	static inline const float kLimitRunSpeed = 1.0f; // 最大速度制限
 
+	LRDirection lrDirection_ = LRDirection::kRight;
 
 	float turnFirstRotationY_ = 0.0f; // 旋回開始時の角度
 	float turnTimer_ = 0.0f; // 旋回タイマー
