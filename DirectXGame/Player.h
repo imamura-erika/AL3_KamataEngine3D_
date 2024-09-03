@@ -6,6 +6,14 @@
 // 前方宣言
 class MapChipField;
 
+	// マップとの当たり判定情報
+struct CollisionMapInfo {
+	bool ceiling = false; // 天井衝突フラグ
+	bool landing = false;
+	bool hitWall = false;
+	Vector3 move;
+};
+
 // 自キャラ
 class Player {
 
@@ -61,14 +69,10 @@ public: // メンバ関数
 	void SetMapChipField(MapChipField* mapChipField) { mapChipField_ = mapChipField; }
 	Vector3 CornerPostion(const Vector3& centre, Corner corner);
 
+	bool cameraStop = false;
+
 private: // メンバ変数
-	// マップとの当たり判定情報
-		struct CollisionMapInfo {
-		bool ceiling = false;
-		bool landing = false;
-		bool hitWall = false;
-		Vector3 move;
-	};
+
 
 	// ワールド変換データ
 	WorldTransform worldTransform_;
@@ -85,7 +89,7 @@ private: // メンバ変数
 
 	static inline const float kAcceleration = 0.1f; // 慣性移動
 	static inline const float kAttenuation = 0.1f; // 速度減衰率
-	static inline const float kLimitRunSpeed = 1.0f; // 最大速度制限
+	static inline const float kLimitRunSpeed = 0.8f; // 最大速度制限
 
 	LRDirection lrDirection_ = LRDirection::kRight;
 
@@ -105,18 +109,21 @@ private: // メンバ変数
 	// マップチップによるフィールド
 	MapChipField* mapChipField_ = nullptr;
 	// キャラクターの当たり判定サイズ
-	static inline const float kWidth = 0.8f;
-	static inline const float kHeight = 0.8f;
+	static inline const float kWidth = 1.6f;
+	static inline const float kHeight = 1.6f;
 	// マップ衝突判定
 	void CheckMapCollision(CollisionMapInfo& info);
-	void CheckMapCollisionTop(CollisionMapInfo& info);
-//	void CheckMapCollisionBottom(CollisionMapInfo& info);
-//	void CheckMapCollisionRight(CollisionMapInfo& info);
-//	void CheckMapCollisionLeft(CollisionMapInfo& info);
+	void CheckMapCollisionTop(CollisionMapInfo& info); // 上
+	//void CheckMapCollisionBottom(CollisionMapInfo& info); // 下
+	//void CheckMapCollisionRight(CollisionMapInfo& info); // 右
+	//void CheckMapCollisionLeft(CollisionMapInfo& info); // 左
 
-	void collisionResult(CollisionMapInfo& info);
+	void collisionResult(CollisionMapInfo& info); // 判定結果を反映
 	void isCeilingCollision(CollisionMapInfo& info);
+	//void isLandingCollision(CollisionMapInfo& info);
+	//void isWallCollision(CollisionMapInfo& info);
 
-	static inline const float kBlank = 0.04f;
-	static inline const float kAttenuationWall = 0.2f;
+	static inline const float kBlank = 0.2f;
+	static inline const float kAttenuationWall = 0.2f; // 着地時の速度減衰率
+	static inline const float kAttenuationLanding = 0.0f; // 着地時の速度減衰率
 };
